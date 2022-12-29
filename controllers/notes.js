@@ -1,43 +1,51 @@
+const { Op } = require('sequelize');
 const {db} = require('../config/database.js')
 const admin = require('../config/firebaseAdmin.js')
 const {dateParser, timeParser, noteParser} = require('../middlewares/parser.js')
 const dayOfTheWeek = require('../middlewares/dayOfTheWeek.js')
-const middleware = require('../middlewares/authenticate.js');
-const { Op } = require('sequelize');
 
 
 const addNote = async (req, res) => {
-    const data = req.body
-    let newNote = {}
-    // validate request data, parse and add to database
-    if(data.date && data.note) {
-        parsedDate = dateParser(date)
-        parsedTime = timeParser(date)
-        parsedNote = noteParser(note)
-        if(parsedTime) {
-            newNote = {
-                date: parsedDate,
-                time: parsedTime,
-                dayOfTheWeek: dayOfTheWeek(parsedDate.getDay()),
-                note: parsedNote,
-                userPhone: req.user
-            }
+    try {
+        const data = req.body
+        let newNote = {}
 
-        }
-        else {
-            newNote = {
-                date: parsedDate,
-                dayOfTheWeek: dayOfTheWeek(parsedDate.getDay()),
-                note: parsedNote,
-                userPhone: req.user
-
+        // validate request data, parse, add to database and send Notification
+        if(data.date && data.note) {
+            parsedDate = dateParser(date)
+            parsedTime = timeParser(date)
+            parsedNote = noteParser(note)
+            if(parsedTime) {
+                newNote = {
+                    date: parsedDate,
+                    time: parsedTime,
+                    dayOfTheWeek: dayOfTheWeek(parsedDate.getDay()),
+                    note: parsedNote,
+                    userPhone: req.user
+                }
+    
             }
-        }
-        db.note.create(newNote).then((result) => {
+            else {
+                newNote = {
+                    date: parsedDate,
+                    dayOfTheWeek: dayOfTheWeek(parsedDate.getDay()),
+                    note: parsedNote,
+                    userPhone: req.user
+    
+                }
+            }
+            await db.note.create(newNote)
+            const message = {
+                notification: {
+                  title: 'Note Success',
+                  body: 'You are added note successfully',
+                }
+            }
+            await admin.messaging().send(message)
             res.status(200).json({message:'You added note successfully', data: result})
-        }).catch(error => {
-            res.status(404).json({message: error.message})
-        })
+        }
+    } catch (error) {
+        res.status(400).json({message: error.message})
     }
 }
 

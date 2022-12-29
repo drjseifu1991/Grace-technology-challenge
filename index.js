@@ -1,16 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const notesRoutes = require('./routes/notes.js')
 const { db } = require('./config/database.js')
 const userRoutes = require('./routes/user.js')
+const notesRoutes = require('./routes/notes.js')
 
 
 /* CONFIGURATION */
-dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(helmet());
