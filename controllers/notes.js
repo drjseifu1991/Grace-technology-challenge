@@ -3,6 +3,7 @@ const admin = require('../config/firebaseAdmin.js')
 const {dateParser, timeParser, noteParser} = require('../middlewares/parser.js')
 const dayOfTheWeek = require('../middlewares/dayOfTheWeek.js')
 const middleware = require('../middlewares/authenticate.js');
+const { Op } = require('sequelize');
 
 
 const addNote = async (req, res) => {
@@ -19,6 +20,7 @@ const addNote = async (req, res) => {
                 time: parsedTime,
                 dayOfTheWeek: dayOfTheWeek(parsedDate.getDay()),
                 note: parsedNote,
+                userPhone: req.user
             }
 
         }
@@ -26,7 +28,9 @@ const addNote = async (req, res) => {
             newNote = {
                 date: parsedDate,
                 dayOfTheWeek: dayOfTheWeek(parsedDate.getDay()),
-                note: parsedNote
+                note: parsedNote,
+                userPhone: req.user
+
             }
         }
         db.note.create(newNote).then((result) => {
@@ -39,18 +43,33 @@ const addNote = async (req, res) => {
 
 const getNotesByUser = async (req, res) => {
     const notes = await db.note.findAll({
-        where
+        where: {
+            userPhone: req.user
+        }
     })
     res.status(400).json(notes)
 }
 
 const getNotesByUserAndDate = async (req, res) => {
-    const notes = await db.note.findAll()
+    date = req.body.date
+    const notes = await db.note.findAll({
+        where: {
+            userPhone: req.user,
+            date: date
+        }
+    })
     res.status(400).json(notes)
 }
 
 const getNotesByUserAndDateRange = async (req, res) => {
-    const notes = await db.note.findAll()
+    const toDate = req.body.toDate
+    const fromDate = req.body.fromDate
+    const notes = await db.note.findAll( {
+        where: {
+            date: {[Op.between]: [toDate, fromDate]},
+            userPhone: req.user
+        }
+    })
     res.status(400).json(notes)
 }
 
