@@ -5,8 +5,8 @@ const authenticationMiddleware = require('../middlewares/authenticate');
 const router = express.Router()
 
 router.post('/add', authenticationMiddleware, addNote)
-router.get('/notes/:user', authenticationMiddleware, getNotesByUser)
-router.get('/notes/:user&date:', authenticationMiddleware, getNotesByUserAndDate)
-router.get('/notes/user:&date-rang:', authenticationMiddleware, getNotesByUserAndDateRange)
+router.get('/notes', authenticationMiddleware, getNotesByUser)
+router.get('/notes/:date',authenticationMiddleware, getNotesByUserAndDate)
+router.get('/notesByRange/', authenticationMiddleware, getNotesByUserAndDateRange)
 
 module.exports = router

@@ -24,16 +24,14 @@ app.use('/user', userRoutes)
 app.use('/notes', notesRoutes)
 
 // Sequlize CONFIGURATION
-db.sequelize.sync({ force:true }).then(() => {
+db.sequelize.sync({ force:false }).then(() => {
     console.log('Database has been synced successfully.')
 }).catch(error => {
     console.log('Unable to sync database:', error)
 })
 
-
-
 // Listen for Request
 
-app.listen(3000, () => {
-    console.log('Listening on 3000')
+app.listen(5001, () => {
+    console.log('Listening on 5001')
 })

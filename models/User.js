@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
         middleName: {
             type:DataTypes.STRING,
             allowNull: false,
-
         },
         lastName: {
             type:DataTypes.STRING,
@@ -17,11 +16,17 @@ module.exports = (sequelize, DataTypes) => {
             type:DataTypes.STRING,
             allowNull: false,
             unique: true,
-            primaryKey: true
+            
         },
         address: {
             type:DataTypes.STRING,
             allowNull: false,
+        },
+        uid: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            primaryKey: true
         }
 
     })

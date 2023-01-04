@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         time: {
-            type:DataTypes.TIME,
+            type:DataTypes.STRING,
         },
         dayOfTheWeek: {
             type:DataTypes.STRING,
